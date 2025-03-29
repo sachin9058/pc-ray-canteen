@@ -43,7 +43,7 @@ const ProductPage = () => {
                         <Image
                             src={productData.image}
                             alt="alt"
-                            className="w-full h-auto object-cover mix-blend-multiply"
+                            className="w-full h-auto object-cover mix-blend-normal"
                             width={1280}
                             height={720}
                         />

@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { AppContextProvider } from "@/context/AppContext";
+import RegisterUser from "@/components/RegisterUser"; // Move it to a separate client component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,8 @@ export default function RootLayout({
         >
           <Navbar />
           <AppContextProvider>
-          {children}
+            <RegisterUser /> {/* Registers user automatically */}
+            {children}
           </AppContextProvider>
         </body>
       </html>
