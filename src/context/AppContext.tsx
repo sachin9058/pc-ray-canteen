@@ -19,6 +19,7 @@ interface AppContextProps {
     removeFromCart: (itemId: string) => void;
     getCartCount: () => number;
     getCartAmount: () => number;
+    clearCart: () => void; 
 }
 
 export const AppContext = createContext<AppContextProps | undefined>(undefined);
@@ -54,6 +55,7 @@ export const AppContextProvider: React.FC<AppProviderProps> = ({ children }) => 
         });
     };
     
+    const clearCart = () => setCartItems({});
     const updateCartQuantity = (productName: string, quantity: number) => {
         setCartItems((prev) => {
             const updatedCart = { ...prev };
@@ -99,9 +101,12 @@ export const AppContextProvider: React.FC<AppProviderProps> = ({ children }) => 
                 removeFromCart,
                 getCartCount,
                 getCartAmount,
+                clearCart
+                
             }}
         >
             {children}
         </AppContext.Provider>
     );
 };
+
