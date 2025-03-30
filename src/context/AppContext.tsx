@@ -1,4 +1,5 @@
 'use client'
+import Items from "@/components/Items";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
@@ -15,6 +16,7 @@ interface AppContextProps {
     setCartItems: React.Dispatch<React.SetStateAction<Record<string, number>>>;
     addToCart: (itemId: string) => void;
     updateCartQuantity: (itemId: string, quantity: number) => void;
+    removeFromCart: (itemId: string) => void;
     getCartCount: () => number;
     getCartAmount: () => number;
 }
@@ -34,48 +36,52 @@ interface AppProviderProps {
 }
 
 export const AppContextProvider: React.FC<AppProviderProps> = ({ children }) => {
-    const currency = process.env.NEXT_PUBLIC_CURRENCY;
+    const currency = "₹"
     const router = useRouter();
     const { user } = useUser();
 
-    const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<any[]>(Items);
     const [userData, setUserData] = useState<any>(null);
     const [isSeller, setIsSeller] = useState<boolean>(true);
     const [cartItems, setCartItems] = useState<Record<string, number>>({});
 
 
-
-    const addToCart = (itemId: string) => {
-        setCartItems((prevCart) => {
-            const newCart = { ...prevCart };
-            newCart[itemId] = (newCart[itemId] || 0) + 1;
-            return newCart;
+    const addToCart = (productName: string) => {
+        setCartItems((prev) => {
+            const updatedCart = { ...prev };
+            updatedCart[productName] = (updatedCart[productName] || 0) + 1; // ✅ Update properly
+            return { ...updatedCart }; // ✅ Return a new object to trigger re-render
         });
     };
-
-    const updateCartQuantity = (itemId: string, quantity: number) => {
-        setCartItems((prevCart) => {
-            const newCart = { ...prevCart };
-            if (quantity === 0) {
-                delete newCart[itemId];
+    
+    const updateCartQuantity = (productName: string, quantity: number) => {
+        setCartItems((prev) => {
+            const updatedCart = { ...prev };
+            if (quantity > 0) {
+                updatedCart[productName] = quantity;
             } else {
-                newCart[itemId] = quantity;
+                delete updatedCart[productName]; // ✅ Remove item if quantity is 0
             }
-            return newCart;
+            return { ...updatedCart }; // ✅ Return new object
         });
     };
-
+    const removeFromCart = (productName: string) => {
+        setCartItems((prev: Record<string, number>) => {
+            const updatedCart = { ...prev };
+            delete updatedCart[productName]; // Remove item
+            return updatedCart;
+        });
+    };
     const getCartCount = (): number => {
         return Object.values(cartItems).reduce((sum, qty) => sum + qty, 0);
     };
 
     const getCartAmount = (): number => {
-        return Object.entries(cartItems).reduce((total, [itemId, qty]) => {
-            const itemInfo = products.find((product) => product._id === itemId);
-            return itemInfo ? total + itemInfo.offerPrice * qty : total;
+        return Object.entries(cartItems).reduce((total, [productName, qty]) => {
+            const itemInfo = products.find((product) => product.name === productName); // ✅ Match by name
+            return itemInfo ? total + itemInfo.price * qty : total; // ✅ Use itemInfo.price
         }, 0);
     };
-
     return (
         <AppContext.Provider
             value={{
@@ -90,8 +96,9 @@ export const AppContextProvider: React.FC<AppProviderProps> = ({ children }) => 
                 setCartItems,
                 addToCart,
                 updateCartQuantity,
+                removeFromCart,
                 getCartCount,
-                getCartAmount
+                getCartAmount,
             }}
         >
             {children}

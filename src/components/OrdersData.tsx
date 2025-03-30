@@ -34,6 +34,7 @@ const OrderSummary: React.FC = () => {
   useEffect(() => {
     fetchUserAddresses();
   }, []);
+  const shippingFee = getCartAmount()===0 ? 0 : 15
 
   return (
     <div className="w-full md:w-96 bg-gray-500/5 p-5">
@@ -104,7 +105,6 @@ const OrderSummary: React.FC = () => {
 
         <hr className="border-gray-500/30 my-5" />
 
-        {/* Order Summary */}
         <div className="space-y-4">
           <div className="flex justify-between text-base font-medium">
             <p className="uppercase text-gray-600">Items {getCartCount()}</p>
@@ -112,18 +112,19 @@ const OrderSummary: React.FC = () => {
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Shipping Fee</p>
-            <p className="font-medium text-gray-800">Free</p>
+            <p className="font-medium text-gray-800">{shippingFee}</p>
           </div>
           <div className="flex justify-between">
             <p className="text-gray-600">Tax (2%)</p>
             <p className="font-medium text-gray-800">
-              {currency ?? ""}{Math.floor((getCartAmount() ?? 0) * 0.02)}
+              {currency ?? ""}{((getCartAmount() ?? 0) * 0.02).toFixed(2)}
             </p>
           </div>
           <div className="flex justify-between text-lg md:text-xl font-medium border-t pt-3">
             <p>Total</p>
             <p>
-              {currency ?? ""}{(getCartAmount() ?? 0) + Math.floor((getCartAmount() ?? 0) * 0.02)}
+            {currency ?? ""}{((getCartAmount() ?? 0) + Math.floor((getCartAmount() ?? 0) * 0.02) + shippingFee + parseFloat(((getCartAmount() ?? 0) * 0.02).toFixed(2))).toFixed(2)}
+
             </p>
           </div>
         </div>
