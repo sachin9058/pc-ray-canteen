@@ -1,5 +1,4 @@
 'use client'
-import Addresses from "./Addresses";
 import { useAppContext } from "@/context/AppContext";
 import React, { useEffect, useState } from "react";
 
@@ -7,34 +6,47 @@ import React, { useEffect, useState } from "react";
 interface AddressType {
   fullName: string;
   room: number;
-  floor: number
-  mobile : number;
+  floor: number;
+  mobile: number;
 }
 
 const OrderSummary: React.FC = () => {
   const { currency, router, getCartCount, getCartAmount } = useAppContext();
-
   const [selectedAddress, setSelectedAddress] = useState<AddressType | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [userAddresses, setUserAddresses] = useState<AddressType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchUserAddresses = () => {
-    setUserAddresses(Addresses);
-  };
+  // Fetch user addresses from the backend
+  useEffect(() => {
+    const fetchUserAddresses = async () => {
+      try {
+        const response = await fetch("/api/address");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch addresses");
+        }
+
+        const data = await response.json();
+        setUserAddresses(data.addresses);
+      } catch (error) {
+        setError("Error fetching addresses");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserAddresses();
+  }, []);
 
   const handleAddressSelect = (address: AddressType) => {
     setSelectedAddress(address);
     setIsDropdownOpen(false);
   };
 
-  const createOrder = async () => {
-    // Order creation logic
-  };
-
-  useEffect(() => {
-    fetchUserAddresses();
-  }, []);
-  const shippingFee = getCartAmount()===0 ? 0 : 15
+  const shippingFee = getCartAmount() === 0 ? 0 : 15;
 
   return (
     <div className="w-full md:w-96 bg-gray-500/5 p-5">
@@ -49,10 +61,15 @@ const OrderSummary: React.FC = () => {
             <button
               className="peer w-full text-left px-4 pr-2 py-2 bg-white text-gray-700 focus:outline-none"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              disabled={loading || error !== null}
             >
               <span>
-                {selectedAddress
-                  ? `${selectedAddress.fullName},${selectedAddress.room},${selectedAddress.floor},${selectedAddress.mobile}`
+                {loading
+                  ? "Loading addresses..."
+                  : error
+                  ? "Error fetching addresses"
+                  : selectedAddress
+                  ? `${selectedAddress.fullName}, ${selectedAddress.room}, ${selectedAddress.floor}, ${selectedAddress.mobile}`
                   : "Select Address"}
               </span>
               <svg
@@ -70,15 +87,19 @@ const OrderSummary: React.FC = () => {
 
             {isDropdownOpen && (
               <ul className="absolute w-full bg-white border shadow-md mt-1 z-10 py-1.5">
-                {userAddresses.map((address, index) => (
-                  <li
-                    key={index}
-                    className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer"
-                    onClick={() => handleAddressSelect(address)}
-                  >
-                    {address.fullName}, {address.mobile}, {address.room}, {address.floor}
-                  </li>
-                ))}
+                {userAddresses.length > 0 ? (
+                  userAddresses.map((address, index) => (
+                    <li
+                      key={index}
+                      className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer"
+                      onClick={() => handleAddressSelect(address)}
+                    >
+                      {address.fullName}, {address.mobile}, {address.room}, {address.floor}
+                    </li>
+                  ))
+                ) : (
+                  <li className="px-4 py-2 text-gray-600">No addresses found</li>
+                )}
                 <li
                   onClick={() => router.push("/add-address")}
                   className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-center"
@@ -123,14 +144,13 @@ const OrderSummary: React.FC = () => {
           <div className="flex justify-between text-lg md:text-xl font-medium border-t pt-3">
             <p>Total</p>
             <p>
-            {currency ?? ""}{((getCartAmount() ?? 0) + Math.floor((getCartAmount() ?? 0) * 0.02) + shippingFee + parseFloat(((getCartAmount() ?? 0) * 0.02).toFixed(2))).toFixed(2)}
-
+              {currency ?? ""}{((getCartAmount() ?? 0) + Math.floor((getCartAmount() ?? 0) * 0.02) + shippingFee + parseFloat(((getCartAmount() ?? 0) * 0.02).toFixed(2))).toFixed(2)}
             </p>
           </div>
         </div>
       </div>
 
-      <button onClick={createOrder} className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700">
+      <button onClick={() => router.push('/checkout')} className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700">
         Place Order
       </button>
     </div>
