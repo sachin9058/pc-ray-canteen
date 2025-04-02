@@ -26,7 +26,7 @@ const OrderSchema = new Schema<IOrder>({
   totalAmount: { type: Number, required: true },
   status: {
     type: String,
-    enum: ["pending", "processing", "shipped", "delivered"],
+    enum: ["pending", "Paid", "Prepared", "Delivered"],
     default: "pending",
   },
   createdAt: { type: Date, default: Date.now },
