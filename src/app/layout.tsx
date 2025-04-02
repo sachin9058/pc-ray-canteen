@@ -33,14 +33,14 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased pt-16`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased pt-16 flex flex-col min-h-screen`}
         >
           <Navbar />
           <AppContextProvider>
-            <RegisterUser /> 
-            {children}
+            <RegisterUser />
+            <main className="flex-grow">{children}</main>
           </AppContextProvider>
-          <Footer/>
+          <Footer />
         </body>
       </html>
     </ClerkProvider>

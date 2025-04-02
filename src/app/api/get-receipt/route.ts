@@ -17,7 +17,7 @@ export async function GET(req: Request) {
   try {
     const order = await razorpay.orders.fetch(orderId);
     return NextResponse.json({ success: true, order });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ success: false, error: "Failed to fetch order" }, { status: 500 });
   }
 }

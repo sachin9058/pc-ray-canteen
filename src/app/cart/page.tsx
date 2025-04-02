@@ -17,7 +17,7 @@ const Cart = () => {
       alert("Please Login First");
       router.push("/");
     }
-  }, [user, router]); // ✅ Always run but only executes when `user` is null
+  }, [user, router]);
 
   useEffect(() => {
     console.log("cartItems:", cartItems);
@@ -34,62 +34,58 @@ const Cart = () => {
   const cartProductList = products.filter((product) => cartItems[product.name]);
 
   return (
-    <div className="flex flex-col md:flex-row gap-10 px-6 md:px-16 lg:px-32 pt-14 mb-20">
-      <div className="flex-1">
-        <div className="flex items-center justify-between mb-8 border-b border-gray-500/30 pb-6">
-          <p className="text-2xl md:text-3xl text-black">
-            Your <span className="font-medium text-black">Cart</span>
+    <div className="flex flex-col md:flex-row gap-10 px-4 md:px-16 lg:px-32 pt-14 mb-20 min-h-screen">
+      <div className="flex-1 bg-white p-6 shadow-lg rounded-lg">
+        <div className="flex items-center justify-between mb-6 border-b border-gray-300 pb-4">
+          <p className="text-xl md:text-2xl font-semibold text-gray-900">
+            Your <span className="font-bold text-orange-500">Cart</span>
           </p>
-          <p className="text-lg md:text-xl text-gray-500/80">{getCartCount()} Items</p>
+          <p className="text-sm md:text-lg text-gray-600">{getCartCount()} Items</p>
         </div>
 
         {cartProductList.length === 0 ? (
           <p className="text-center text-gray-500">Your cart is empty.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full table-auto">
+            <table className="min-w-full table-auto text-sm md:text-base">
               <thead className="text-left">
-                <tr>
-                  <th className="pb-6 md:px-4 px-1 text-gray-700 font-medium">Product</th>
-                  <th className="pb-6 md:px-4 px-1 text-gray-700 font-medium">Price</th>
-                  <th className="pb-6 md:px-4 px-1 text-gray-700 font-medium">Quantity</th>
-                  <th className="pb-6 md:px-4 px-1 text-gray-700 font-medium">Subtotal</th>
-                  <th className="pb-6 md:px-4 px-1 text-gray-700 font-medium">Actions</th>
+                <tr className="border-b border-gray-300">
+                  <th className="py-3 px-2 md:px-4 text-gray-700">Product</th>
+                  <th className="py-3 px-2 md:px-4 text-gray-700">Quantity</th>
+                  <th className="py-3 px-2 md:px-4 text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {cartProductList.map((product) => (
-                  <tr key={product.name} className="border-t">
-                    <td className="flex items-center gap-4 py-4">
-                      <Image src={product.image} alt={product.name} width={100} height={100} className="rounded-md" />
-                      <span className="text-lg">{product.name}</span>
+                  <tr key={product.name} className="border-t text-gray-800">
+                    <td className="flex items-center gap-4 py-4 px-2 md:px-4">
+                      <Image src={product.image} alt={product.name} width={80} height={80} className="rounded-md" />
+                      <span className="text-sm md:text-lg font-medium">{product.name}</span>
                     </td>
-                    <td className="py-4 md:px-4 px-1">
-                    </td>
-                    <td className="py-4 md:px-4 px-1">
-                      <div className="flex items-center gap-2">
+                    <td className="py-4 px-2 md:px-4">
+                      <div className="flex items-center justify-center gap-3 border border-gray-300 rounded-md p-2">
                         <button
                           onClick={() => updateCartQuantity(product.name, cartItems[product.name] - 1)}
                           disabled={cartItems[product.name] === 1}
-                          className="bg-gray-200 px-2 py-1 rounded disabled:opacity-50"
+                          className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50 text-xl"
                         >
                           -
                         </button>
-                        <span>{cartItems[product.name]}</span>
+                        <span className="text-lg font-semibold">{cartItems[product.name]}</span>
                         <button
                           onClick={() => updateCartQuantity(product.name, cartItems[product.name] + 1)}
-                          className="bg-gray-200 px-2 py-1 rounded"
+                          className="bg-gray-200 px-3 py-1 rounded text-xl"
                         >
                           +
                         </button>
                       </div>
                     </td>
-                    <td className="py-4 md:px-4 px-1">
+                    <td className="py-4 px-2 md:px-4">
                       <button
                         onClick={() => removeFromCart(product.name)}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm md:text-base"
                       >
-                        X
+                        Remove
                       </button>
                     </td>
                   </tr>
@@ -106,7 +102,7 @@ const Cart = () => {
         {cartProductList.length > 0 && (
           <button
             onClick={() => router.push('/checkout')}
-            className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
+            className="w-full bg-orange-600 text-white py-3 mt-5 rounded-md hover:bg-orange-700 text-lg font-semibold"
           >
             Place Order
           </button>

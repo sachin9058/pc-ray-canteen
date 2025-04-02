@@ -6,6 +6,7 @@ import { CardBody, CardContainer, CardItem } from "./ui/3d-card";
 import Link from "next/link";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { generateSlug } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 
 interface ItemStyleProps {
@@ -27,6 +28,7 @@ const ItemStyle:FC<ItemStyleProps> = ({name,image,rating,price,description})=> {
           </div>
         );
       };
+      const router = useRouter()
   return (
     <CardContainer className="inter-var">
       <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-6 border  ">
@@ -50,6 +52,7 @@ const ItemStyle:FC<ItemStyleProps> = ({name,image,rating,price,description})=> {
             width="1000"
             className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
             alt="loading"
+            onClick={()=>router.push(`/product/${generateSlug(name)}`)}
           />
         </CardItem>
         <div className="flex justify-between items-center mt-20">

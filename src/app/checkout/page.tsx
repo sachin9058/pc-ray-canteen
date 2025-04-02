@@ -6,6 +6,33 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 
+// ✅ Declare Razorpay on Window
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
+
+interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+  }) => void;
+  prefill: { name: string; email: string; contact: string };
+  theme: { color: string };
+}
+
+interface RazorpayInstance {
+  open: () => void;
+}
+
 const Checkout = () => {
   const { cartItems, products, getCartAmount, currency, clearCart } = useAppContext();
   const router = useRouter();
@@ -24,8 +51,8 @@ const Checkout = () => {
 
   // ✅ Load Razorpay script dynamically
   const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      if ((window as any).Razorpay) {
+    return new Promise<boolean>((resolve) => {
+      if (window.Razorpay) {
         resolve(true);
         return;
       }
@@ -83,14 +110,14 @@ const Checkout = () => {
       }
 
       // ✅ Step 2: Open Razorpay Checkout
-      const options = {
+      const options: RazorpayOptions = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
         amount: order.amount,
         currency: order.currency,
-        name: "Your Store",
+        name: "InstaFood App",
         description: "Complete your purchase",
         order_id: order.id,
-        handler: async function (response: any) {
+        handler: async function (response) {
           // ✅ Step 3: Verify payment on the backend
           const verifyRes = await fetch("/api/payment", {
             method: "PUT",
@@ -125,14 +152,13 @@ const Checkout = () => {
             alert("Payment verification failed!");
           }
         },
-        prefill: { name: user.fullName, email: user.primaryEmailAddress, contact: "9999999999" },
+        prefill: { name: user.fullName ?? "Guest", email: user.primaryEmailAddress?.emailAddress ?? "guest@example.com", contact: "9999999999" },
         theme: { color: "#3399cc" },
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new window.Razorpay(options);
       rzp.open();
-    } catch (error) {
-      console.error("❌ Payment Error:", error);
+    } catch {
       alert("Something went wrong!");
     }
   };

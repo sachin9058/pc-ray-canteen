@@ -39,17 +39,7 @@ const ThankYou = () => {
   if (!orderDetails) {
     return <p className="text-center mt-10 text-lg">Loading order details...</p>;
   }
-  const checkReceipt = async (orderId: string) => {
-    const response = await fetch(`/api/get-receipt?orderId=${orderId}`);
-    const data = await response.json();
-    
-    if (data.success) {
-      console.log("🔹 Receipt ID:", data.order.receipt);
-    } else {
-      console.error("❌ Failed to fetch receipt:", data.error);
-    }
-  };
-
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-3xl">
