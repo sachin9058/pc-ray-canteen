@@ -1,20 +1,15 @@
 "use client"
-import React, { FC, useState } from "react";
+import React, {useState } from "react";
 import Faqs from "@/components/Faqs";
-
-interface PageProps{
-    question : string
-    answer : string
-}
+import { useRouter } from "next/navigation";
 
 
-const Page:FC<PageProps> = ({question,answer}) => {
+const Page = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [faq] = Faqs
-
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+  const router = useRouter()
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 px-6 py-10">
@@ -27,14 +22,14 @@ const Page:FC<PageProps> = ({question,answer}) => {
         </p>
         <p className="text-gray-400 text-base sm:text-lg">
           Feel free to check out our{" "}
-          <span className="text-blue-400 hover:underline cursor-pointer">
+          <span onClick={()=>router.push("https://www.instagram.com/itz_5achin/")} className="text-blue-400 hover:underline cursor-pointer">
             Instagram
           </span>{" "}
           and{" "}
-          <span className="text-blue-400 hover:underline cursor-pointer">
+          <span onClick={()=>router.push("https://www.linkedin.com/in/sachin-kumar-9b9439312/")} className="text-blue-400 hover:underline cursor-pointer">
             LinkedIn
           </span>{" "}
-          page. If you still can’t find what you're looking for, just{" "}
+          page. If you still can not find what you are looking for, just{" "}
           <span className="font-semibold text-orange-400">Contact Us!</span> 🚀
         </p>
       </div>

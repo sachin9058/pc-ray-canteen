@@ -9,7 +9,7 @@ const Faqs = [
   },
   {
     question: "Do you offer refunds?",
-    answer: "Yes! We offer refunds within 7 days of purchase if the product is defective.",
+    answer: "Yes! We offer when delivered food is not much good as your Expectations ❤️",
   },
   {
     question : "What payment methods do you accept?",

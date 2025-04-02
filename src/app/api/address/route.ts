@@ -24,7 +24,7 @@ export async function POST(req:NextRequest){
 
         return  NextResponse.json({message : "Address Saved Successfully"},{status:201})
 
-    } catch (error) {
+    } catch {
         return NextResponse.json({ message: "Error saving address" }, { status: 500 });
     }
 }
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json({ addresses }, { status: 200 });
 
-    } catch (error) {
+    } catch  {
         return NextResponse.json({ message: "Error fetching addresses" }, { status: 500 });
     }
 }

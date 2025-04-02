@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import mongoose from "mongoose";
 import Order from "@/models/Order"; 
 import { connectDB } from "@/lib/mongodb"; 
-import { getAuth } from "@clerk/nextjs/server";
+
+interface CartItem {
+  name: string;
+  price: number;
+  quantity: number;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     const newOrder = new Order({
       userId,
-      items: cartItems.map((item: any) => ({
+      items: cartItems.map((item: CartItem) => ({
         name: item.name,
         price: item.price,
         quantity: item.quantity,
@@ -27,26 +31,7 @@ export async function POST(req: NextRequest) {
     await newOrder.save();
 
     return NextResponse.json({ message: "Order placed successfully!" }, { status: 201 });
-  } catch (error) {
-    console.error("Order error:", error);
+  } catch  {
     return NextResponse.json({ error: "Failed to place order" }, { status: 500 });
-  }
-}
-
-export async function GET(req: NextRequest) {
-  try {
-    await connectDB();
-    const { userId } = getAuth(req);
-
-    if (!userId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
-
-    return NextResponse.json({ orders }, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    return NextResponse.json({ error: "Failed to fetch orders" }, { status: 500 });
   }
 }

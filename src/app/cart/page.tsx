@@ -3,14 +3,21 @@
 import Image from "next/image";
 import { useAppContext } from "@/context/AppContext";
 import OrderSummary from "@/components/OrdersData";
-import { useUser } from "@clerk/nextjs"; // FIX: Import Clerk User
-import { useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
+import { useEffect, useRef } from "react";
 
 const Cart = () => {
-  const { products, router, cartItems, addToCart, updateCartQuantity, getCartCount, getCartAmount, currency, removeFromCart , clearCart } = useAppContext();
-  const { user } = useUser(); // FIX: Fetch user from Clerk
+  const { products, router, cartItems, updateCartQuantity, getCartCount, getCartAmount, currency, removeFromCart } = useAppContext();
+  const { user } = useUser();
+  const alertShown = useRef(false);
 
-  const cartProductList = products.filter((product) => cartItems[product.name]);
+  useEffect(() => {
+    if (!user && !alertShown.current) {
+      alertShown.current = true;
+      alert("Please Login First");
+      router.push("/");
+    }
+  }, [user, router]); // ✅ Always run but only executes when `user` is null
 
   useEffect(() => {
     console.log("cartItems:", cartItems);
@@ -20,6 +27,11 @@ const Cart = () => {
     console.log("Products:", products);
   }, [products]);
 
+  if (!user) {
+    return null;
+  }
+
+  const cartProductList = products.filter((product) => cartItems[product.name]);
 
   return (
     <div className="flex flex-col md:flex-row gap-10 px-6 md:px-16 lg:px-32 pt-14 mb-20">
@@ -53,7 +65,6 @@ const Cart = () => {
                       <span className="text-lg">{product.name}</span>
                     </td>
                     <td className="py-4 md:px-4 px-1">
-                      {currency}{(product.offerPrice ?? product.price).toFixed(2)}
                     </td>
                     <td className="py-4 md:px-4 px-1">
                       <div className="flex items-center gap-2">
@@ -72,9 +83,6 @@ const Cart = () => {
                           +
                         </button>
                       </div>
-                    </td>
-                    <td className="py-4 md:px-4 px-1">
-                      {currency}{((product.offerPrice ?? product.price) * cartItems[product.name]).toFixed(2)}
                     </td>
                     <td className="py-4 md:px-4 px-1">
                       <button
@@ -97,7 +105,7 @@ const Cart = () => {
 
         {cartProductList.length > 0 && (
           <button
-          onClick={() => router.push('/checkout')}
+            onClick={() => router.push('/checkout')}
             className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
           >
             Place Order

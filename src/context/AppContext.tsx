@@ -2,16 +2,32 @@
 import Items from "@/components/Items";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext,useState, ReactNode } from "react";
+
+import { UserResource } from "@clerk/types"; // Import the correct type
+
+
+interface Product{
+    name : string
+    image : string
+    rating : number
+    price  : number
+    description : string
+}
+interface UserData {
+    id: string;
+    name: string;
+    email: string;
+  }
 
 interface AppContextProps {
-    user: any;
+    user: UserResource | null;
     currency: string | undefined;
     router: ReturnType<typeof useRouter>;
     isSeller: boolean;
     setIsSeller: React.Dispatch<React.SetStateAction<boolean>>;
-    userData: any;
-    products: any[];
+    userData: UserData | null;
+    products: Product[];
     cartItems: Record<string, number>;
     setCartItems: React.Dispatch<React.SetStateAction<Record<string, number>>>;
     addToCart: (itemId: string) => void;
@@ -39,10 +55,10 @@ interface AppProviderProps {
 export const AppContextProvider: React.FC<AppProviderProps> = ({ children }) => {
     const currency = "₹"
     const router = useRouter();
-    const { user } = useUser();
+    const user = useUser().user ?? null; 
 
-    const [products, setProducts] = useState<any[]>(Items);
-    const [userData, setUserData] = useState<any>(null);
+    const [products] = useState<Product[]>(Items);
+const [userData] = useState<UserData | null>(null);
     const [isSeller, setIsSeller] = useState<boolean>(true);
     const [cartItems, setCartItems] = useState<Record<string, number>>({});
 

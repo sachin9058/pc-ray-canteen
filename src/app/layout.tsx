@@ -5,6 +5,9 @@ import Navbar from "@/components/Navbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { AppContextProvider } from "@/context/AppContext";
 import RegisterUser from "@/components/RegisterUser"; // Move it to a separate client component
+import Footer from "@/components/Footer";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +40,7 @@ export default function RootLayout({
             <RegisterUser /> {/* Registers user automatically */}
             {children}
           </AppContextProvider>
+          <Footer/>
         </body>
       </html>
     </ClerkProvider>

@@ -11,8 +11,7 @@ import { useAppContext } from "@/context/AppContext";
 const ProductPage = () => {
     const { slug } = useParams();
     const [productData, setProductData] = useState<ItemStyleProps | null>(null);
-    const [mainImage, setMainImage] = useState(null);
-    const { products, router, addToCart } = useAppContext()
+    const {router, addToCart } = useAppContext()
 
     useEffect(() => {
         const fetchProductData = () => {

@@ -1,6 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "@/context/AppContext";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface Order {
   _id: string;
@@ -15,11 +17,29 @@ const MyOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const alertShown = useRef(false)
 
+  const {user} = useUser();
+  const router = useRouter()
+ 
+  useEffect(() => {
+    if (!user && !alertShown.current) {
+      alertShown.current = true;
+      alert("Please Login First");
+      router.push("/");
+    }
+  }, [user, router]);
   useEffect(() => {
     const fetchOrders = async () => {
+      if (!user || !user.id) {
+        console.warn("User is not logged in or user ID is missing.");
+        setLoading(false);
+        setError("User is not logged in.");
+        return;
+      }
+  
       try {
-        const response = await fetch("/api/orders");
+        const response = await fetch(`/api/orders/${user.id}`); // Use user.id
         if (!response.ok) {
           throw new Error("Failed to fetch orders");
         }
@@ -32,9 +52,9 @@ const MyOrders = () => {
         setLoading(false);
       }
     };
-
+  
     fetchOrders();
-  }, []);
+  }, [user]);
 
   const currentOrders = orders.filter(order => order.status !== "Delivered");
   const recentOrders = orders.filter(order => order.status === "Delivered");
