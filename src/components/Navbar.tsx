@@ -136,7 +136,7 @@ useEffect(() => {
 {isMounted && (
   <div className={`absolute top-full left-0 w-full md:static md:w-auto md:flex md:space-x-8 transition-all duration-300 ease-in-out ${isOpen ? "block bg-orange-500 shadow-md" : "hidden"}`}>
     <ul className="flex flex-col md:flex-row md:items-center p-4 md:p-0 mt-2 md:mt-0 md:space-x-6 border-t md:border-none border-gray-300">
-      {["Home", "Cart", "Help", "Orders"].map((item) => (
+      {["Home", "Cart", "Help", "Orders","Admin"].map((item) => (
         <li key={item} className="text-center md:text-left">
           <Link
             href={item.toLowerCase() === "home" ? "/" : `/${item.toLowerCase()}`}

@@ -13,8 +13,7 @@ const Page = () => {
       </div>
 
  
-      <div className="py-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-0 md:gap-12">
-
+      <div className="py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10 lg:gap-12 max-sm:gap-y-0.5">
         {Items.map((item, index) => (
           <ItemStyle
             key={index}

@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^3.14.2",
-    "@clerk/nextjs": "^6.12.12",
+    "@clerk/clerk-sdk-node": "^4.13.23",
+    "@clerk/nextjs": "^6.13.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@radix-ui/react-select": "^2.1.6",

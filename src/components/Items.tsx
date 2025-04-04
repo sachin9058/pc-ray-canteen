@@ -15,7 +15,7 @@ const Items = [
     },
     {
         name : "Pepsi",
-        image : "/pepsi.webp",
+        image : "/pepsi1.jpg",
         rating : 5,
         price : 50,
         description : '500mL Pepsi Bottle'

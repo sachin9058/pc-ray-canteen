@@ -48,8 +48,8 @@ const ItemStyle:FC<ItemStyleProps> = ({name,image,rating,price,description})=> {
         <CardItem translateZ="100" className="w-full mt-4">
           <Image
             src={image}
-            height="1000"
-            width="1000"
+            height="800"
+            width="800"
             className="h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
             alt="loading"
             onClick={()=>router.push(`/product/${generateSlug(name)}`)}

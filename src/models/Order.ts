@@ -1,18 +1,16 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-
 interface IOrder extends Document {
-  userId: string; 
+  userId: mongoose.Schema.Types.ObjectId; // 🔹 Reference to User model
   items: {
     name: string;
     price: number;
     quantity: number;
   }[];
   totalAmount: number;
-  status: "pending" | "processing" | "shipped" | "delivered";
+  status: "pending" | "paid" | "prepared" | "delivered"; 
   createdAt: Date;
 }
-
 
 const OrderSchema = new Schema<IOrder>({
   userId: { type: String, required: true },
@@ -26,12 +24,11 @@ const OrderSchema = new Schema<IOrder>({
   totalAmount: { type: Number, required: true },
   status: {
     type: String,
-    enum: ["pending", "Paid", "Prepared", "Delivered"],
+    enum: ["pending", "paid", "prepared", "delivered"], 
     default: "pending",
   },
   createdAt: { type: Date, default: Date.now },
 });
-
 
 const Order = mongoose.models.Order || mongoose.model<IOrder>("Order", OrderSchema);
 

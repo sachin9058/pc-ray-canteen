@@ -52,17 +52,17 @@ const ProductPage = () => {
 
                 </div>
                 <div className="flex flex-col">
-                    <h1 className="text-3xl font-medium text-gray-800/90 mb-4">
+                    <h1 className="text-3xl font-medium text-gray-50 mb-4">
                         {productData.name}
                     </h1>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 text-gray-100">
                         Ratings {renderStars(productData.rating)}
                     </div>
-                    <p className="text-gray-600 mt-3">
+                    <p className="text-gray-200 mt-3">
                         {productData.description}
                     </p>
                     <p className="text-3xl font-medium mt-6">
-                        <span  className="  text-gray-800/60 text-[2rem] max-sm:text-lg ml-2 font-extrabold">
+                        <span  className="  text-gray-50 text-[2rem] max-sm:text-lg ml-2 font-extrabold">
                         ₹{productData.price}
                         </span>
                     </p>
@@ -86,7 +86,7 @@ const ProductPage = () => {
                         <button onClick={() => {addToCart(productData.name) ;  router.push('/cart')  }} className="w-full py-3.5 bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition">
                             Add to Cart
                         </button>
-                        <button onClick={() => { addToCart(productData.name); router.push('/cart') }}  className="w-full py-3.5 bg-orange-500 text-white hover:bg-orange-600 transition">
+                        <button onClick={() => { addToCart(productData.name); router.push('/cart') }}  className="w-full py-3.5 bg-orange-600 text-white hover:bg-orange-700 transition">
                             Buy now
                         </button>
                     </div>
