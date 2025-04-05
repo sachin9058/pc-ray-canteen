@@ -26,7 +26,7 @@ export async function GET(req: Request, context: Context) {
 
 export async function PATCH(req: Request, context: Context) {
   await connectDB();
-  const id = context.params.id;
+  const { id } = await context.params;
 
   try {
     const data = await req.json();

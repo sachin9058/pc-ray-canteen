@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useClerk, UserButton, useUser } from "@clerk/nextjs";
 import { Button } from "./ui/button";
 import { FiSearch } from "react-icons/fi";
-import Items from "./Items"; 
+import Items from "./Items";
+import { useAppContext } from "@/context/AppContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,10 +21,11 @@ const Navbar = () => {
   const [filteredProducts, setFilteredProducts] = useState<typeof Items>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { getCartCount } = useAppContext();
 
-useEffect(() => {
-  setIsMounted(true);
-}, []);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     setIsOpen(false);
@@ -67,7 +69,7 @@ useEffect(() => {
   return (
     <nav ref={navRef} className="bg-orange-500 dark:bg-gray-900 fixed w-full z-20 top-0 start-0 shadow-lg">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-6 py-4">
-  
+
         <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <p className="text-white text-xl font-bold">🍔 InstaFood</p>
         </Link>
@@ -80,10 +82,10 @@ useEffect(() => {
             className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 outline-none focus:ring-2 focus:ring-orange-400"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={handleKeyDown} 
+            onKeyDown={handleKeyDown}
           />
-          
-      
+
+
           {filteredProducts.length > 0 && (
             <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 max-h-60 overflow-y-auto">
               {filteredProducts.map((product) => (
@@ -99,7 +101,7 @@ useEffect(() => {
           )}
         </div>
 
-  
+
         <div className="flex items-center space-x-4">
           {!user ? (
             <Button className="bg-white text-orange-500 font-semibold px-4 py-2 rounded-md hover:bg-gray-100 transition" onClick={() => openSignIn()}>
@@ -109,7 +111,7 @@ useEffect(() => {
             <UserButton />
           )}
 
-         
+
           <button className="md:hidden text-white text-xl" onClick={() => setIsSearchOpen(!isSearchOpen)}>
             <FiSearch />
           </button>
@@ -119,7 +121,7 @@ useEffect(() => {
           </button>
         </div>
 
-     
+
         {isSearchOpen && (
           <div className="absolute top-full left-0 w-full bg-white p-2 shadow-lg">
             <input
@@ -128,27 +130,34 @@ useEffect(() => {
               className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-900 outline-none focus:ring-2 focus:ring-orange-400"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleKeyDown} 
+              onKeyDown={handleKeyDown}
             />
           </div>
         )}
 
-{isMounted && (
-  <div className={`absolute top-full left-0 w-full md:static md:w-auto md:flex md:space-x-8 transition-all duration-300 ease-in-out ${isOpen ? "block bg-orange-500 shadow-md" : "hidden"}`}>
-    <ul className="flex flex-col md:flex-row md:items-center p-4 md:p-0 mt-2 md:mt-0 md:space-x-6 border-t md:border-none border-gray-300">
-      {["Home", "Cart", "Help", "Orders","Admin"].map((item) => (
-        <li key={item} className="text-center md:text-left">
-          <Link
-            href={item.toLowerCase() === "home" ? "/" : `/${item.toLowerCase()}`}
-            className="block px-4 py-2 text-white border border-gray-100  text-lg font-medium hover:bg-orange-600 md:hover:bg-transparent md:hover:text-gray-900 dark:hover:text-gray-300 transition rounded-[1rem] md:border md:border-gray-300 md:rounded-lg"
-          >
-            {item}
-          </Link>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+        {isMounted && (
+          <div className={`absolute top-full left-0 w-full md:static md:w-auto md:flex md:space-x-8 transition-all duration-300 ease-in-out ${isOpen ? "block bg-orange-500 shadow-md" : "hidden"}`}>
+            <ul className="flex flex-col md:flex-row md:items-center p-4 md:p-0 mt-2 md:mt-0 md:space-x-6 border-t md:border-none border-gray-300">
+              {["Home", "Cart", "Help", "Orders", "Admin"].map((item) => (
+                <li key={item} className="text-center md:text-left">
+                  <Link
+                    href={item.toLowerCase() === "home" ? "/" : `/${item.toLowerCase()}`}
+                    className="relative
+                    
+                    block px-4 py-2 text-white border border-gray-100  text-lg font-medium hover:bg-orange-600 md:hover:bg-transparent md:hover:text-gray-900 dark:hover:text-gray-300 transition rounded-[1rem] md:border md:border-gray-300 md:rounded-lg"
+                  >
+                    {item}
+                    {item === "Cart" && getCartCount() > 0 && (
+                      <span className="absolute -top-1 -right-2 bg-white text-orange-500 text-xs font-bold px-2 py-0.5 rounded-full">
+                        {getCartCount()}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
       </div>
     </nav>

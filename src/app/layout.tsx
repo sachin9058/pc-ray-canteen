@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { AppContextProvider } from "@/context/AppContext";
 import RegisterUser from "@/components/RegisterUser"; // Move it to a separate client component
 import Footer from "@/components/Footer";
+import { Toaster } from "sonner";
 
 
 
@@ -35,10 +36,11 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased pt-16 flex flex-col min-h-screen`}
         >
-          <Navbar />
           <AppContextProvider>
+            <Navbar />
             <RegisterUser />
             <main className="flex-grow">{children}</main>
+            <Toaster position="top-right" />
           </AppContextProvider>
           <Footer />
         </body>

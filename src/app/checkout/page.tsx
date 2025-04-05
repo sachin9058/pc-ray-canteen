@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
 
-// ✅ Declare Razorpay on Window
 declare global {
   interface Window {
     Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
@@ -68,7 +68,7 @@ const Checkout = () => {
   // ✅ Handle payment and order placement
   const placeOrder = async () => {
     if (!user) {
-      alert("You need to be logged in to place an order.");
+      toast("You need to be logged in to place an order.");
       return;
     }
 
@@ -80,7 +80,7 @@ const Checkout = () => {
       .filter(Boolean);
 
     if (cartArray.length === 0) {
-      alert("Your cart is empty!");
+      toast("Your cart is empty!");
       return;
     }
 
@@ -88,7 +88,7 @@ const Checkout = () => {
       // ✅ Load Razorpay script
       const isRazorpayLoaded = await loadRazorpayScript();
       if (!isRazorpayLoaded) {
-        alert("Failed to load Razorpay. Please try again.");
+        toast("Failed to load Razorpay. Please try again.");
         return;
       }
 
@@ -105,7 +105,7 @@ const Checkout = () => {
       const { order } = await paymentRes.json();
 
       if (!order) {
-        alert("Payment initiation failed!");
+        toast("Payment initiation failed!");
         return;
       }
 
@@ -142,14 +142,14 @@ const Checkout = () => {
             });
 
             if (orderRes.ok) {
-              alert("Order placed successfully!");
+              toast("Order placed successfully!")
               clearCart();
               router.push("/thank-you");
             } else {
-              alert("Order failed to save!");
+              toast("Order failed to save!")
             }
           } else {
-            alert("Payment verification failed!");
+            toast("Payment verification failed!")
           }
         },
         prefill: { name: user.fullName ?? "Guest", email: user.primaryEmailAddress?.emailAddress ?? "guest@example.com", contact: "9999999999" },
@@ -159,7 +159,7 @@ const Checkout = () => {
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch {
-      alert("Something went wrong!");
+      toast("Something went wrong!")
     }
   };
 
